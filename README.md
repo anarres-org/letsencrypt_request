@@ -41,6 +41,17 @@ Example Playbook
     - role: letsencrypt-request
 ```
 
+Testing
+-------
+
+To test the role you need [molecule](http://molecule.readthedocs.io/en/latest/)
+and **docker**.
+
+
+```bash
+molecule test
+```
+
 License
 -------
 
