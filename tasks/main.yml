@@ -7,7 +7,7 @@
   register: letsencrypt_cert
 
 - name: get an SSL certificate for {{ domain }} from Let's Encrypt
-  command: "certbot certonly --standalone --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
+  command: "certbot certonly --webroot -w {{ web_path_letsencrypt }} --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
   args:
     creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   when:
