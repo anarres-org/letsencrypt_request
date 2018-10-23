@@ -1,12 +1,12 @@
 ---
 # tasks file for letsencrypt-request
 
-- name: check if we already have a certificate
+- name: Check if we already have a certificate
   stat:
     path: "/etc/letsencrypt/live/{{ domain }}/fullchain.pem"
   register: letsencrypt_cert
 
-- name: get an SSL certificate for {{ domain }} from Let's Encrypt
+- name: Get an SSL certificate for {{ domain }} from Let's Encrypt
   command: "certbot certonly --webroot -w {{ web_path_letsencrypt }} --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
   args:
     creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
@@ -14,7 +14,7 @@
     - letsencrypt_cert.stat.exists == False
     - testing is undefined
 
-- name: configure Let's Encrypt. delete extra line
+- name: Configure Let's Encrypt. Delete extra line.
   lineinfile:
     path: "/etc/letsencrypt/renewal/{{ domain }}.conf"
     regexp: '^pref_challs'
@@ -22,7 +22,7 @@
   when:
     - testing is undefined
 
-- name: configure Let's Encrypt. change auto renewal method
+- name: Configure Let's Encrypt. Change auto renewal method.
   lineinfile:
     path: "/etc/letsencrypt/renewal/{{ domain }}.conf"
     regexp: '^authenticator'
@@ -31,18 +31,19 @@
   when:
     - testing is undefined
 
-- name: configure Let's Encrypt. configure autorenewal
+- name: Configure Let's Encrypt. Configure renewal hook.
   blockinfile:
     path: "/etc/letsencrypt/renewal/{{ domain }}.conf"
-    insertafter: EOF
-    block: "{{ letsencrypt_webroot_conf }}"
+    insertafter: "[[webroot_map]]"
+    block: "{{ letsencrypt_renewal_conf }}"
     state: present
   when:
     - testing is undefined
+    - letsencrypt_renew_hook is defined
 
 # Alternative if we are testing (as we can't get Let's Encrypt certificates)
 
-- name: create live directory for testing keys
+- name: Create live directory for testing keys
   file:
     dest: /etc/letsencrypt/live/{{ domain }}
     state: directory
@@ -53,7 +54,7 @@
     - testing is defined
     - letsencrypt_cert.stat.exists == False
 
-- name: install openssl
+- name: Install openssl
   apt:
     pkg: openssl
     state: present
@@ -61,7 +62,7 @@
     - testing is defined
     - letsencrypt_cert.stat.exists == False
 
-- name: create self-signed certificate, if testing
+- name: Create self-signed certificate, if testing.
   command: >
     openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 30
     -newkey rsa:4096 -sha256 -keyout /etc/letsencrypt/live/{{ domain }}/privkey.pem
@@ -73,7 +74,7 @@
     - testing is defined
     - letsencrypt_cert.stat.exists == False
 
-- name: create a combined SSL cert for testing
+- name: Create a combined SSL cert for testing
   shell: cat /etc/letsencrypt/live/{{ domain }}/cert.pem >
     /etc/letsencrypt/live/{{ domain }}/fullchain.pem
   when:

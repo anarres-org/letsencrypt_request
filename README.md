@@ -21,8 +21,10 @@ Role Variables
 
 * `domain`: Domain name of the requested certificate.
 * `web_path_letsencrypt`: path where to store the ACME challenges.
-* `letsencrypt_webroot_conf`: Block of lines to setup the auto renewal via the
-http-01 challenge using the specified web path.
+* `letsencrypt_renewal_conf`: For configuring the autorenewal settings, used
+only if `letsencrypt_renew_hook` is defined.
+* `letsencrypt_renew_hook`: Command to execute when a successful renewal of the
+`domain` happens. For example: `/usr/sbin/service nginx restart`
 
 Dependencies
 ------------
@@ -37,6 +39,7 @@ Example Playbook
   hosts: all
   vars:
   	domain: sub.domain.tld
+	letsencrypt_renew_hook: /usr/sbin/service nginx restart
   roles:
     - role: letsencrypt-request
 ```

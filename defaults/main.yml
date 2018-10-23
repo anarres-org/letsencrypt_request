@@ -5,7 +5,5 @@ domain: anarres.local
 
 web_path_letsencrypt: /var/www/letsencrypt
 
-letsencrypt_webroot_conf: |
-  webroot_path = {{ web_path_letsencrypt }},
-  [[webroot_map]]
-  {{ domain }} = {{ web_path_letsencrypt}}
+letsencrypt_renewal_conf: |
+  renew_hook = {{ letsencrypt_renew_hook }}
