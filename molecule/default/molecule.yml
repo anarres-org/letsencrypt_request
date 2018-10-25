@@ -18,6 +18,7 @@ provisioner:
     extra-vars:
       testing: true
       docker_registry_mirror: http://172.16.100.1:5000
+      domain: anarres.local
   env:
     ANSIBLE_LIBRARY: /etc/ansible/library
   lint:

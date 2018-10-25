@@ -1,7 +1,7 @@
 ---
 # defaults file for letsencrypt-request
 
-domain: anarres.local
+domain:
 
 web_path_letsencrypt: /var/www/letsencrypt
 
