@@ -13,6 +13,16 @@
   when:
     - letsencrypt_cert.stat.exists == False
     - testing is undefined
+    - letsencrypt_method == 'webroot'
+
+- name: Get an SSL certificate for {{ domain }} from Let's Encrypt
+  command: "certbot certonly --standalone --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
+  args:
+    creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
+  when:
+    - letsencrypt_cert.stat.exists == false
+    - testing is undefined
+    - letsencrypt_method == 'standalone'
 
 - name: Configure Let's Encrypt. Delete extra line.
   lineinfile:

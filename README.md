@@ -25,6 +25,8 @@ Role Variables
 only if `letsencrypt_renew_hook` is defined.
 * `letsencrypt_renew_hook`: Command to execute when a successful renewal of the
 `domain` happens. For example: `/usr/sbin/service nginx restart`
+* `letsencrypt_method`: Method to use when requesting the certificate the first
+  time. `standalone` or `webroot` (default).
 
 Dependencies
 ------------
