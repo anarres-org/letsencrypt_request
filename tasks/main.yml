@@ -44,7 +44,7 @@
 - name: Configure Let's Encrypt. Configure renewal hook.
   blockinfile:
     path: "/etc/letsencrypt/renewal/{{ domain }}.conf"
-    insertafter: "[[webroot_map]]"
+    insertbefore: "[[webroot_map]]"
     block: "{{ letsencrypt_renewal_conf }}"
     state: present
   when:
