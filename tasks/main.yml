@@ -129,6 +129,40 @@
     - testing is defined
     - letsencrypt_cert.stat.exists == False
 
+- name: Check if the certificate is on the system
+  stat:
+    path: "/usr/share/ca-certificates/extra/{{ base_domain }}.crt"
+  register: system_cert
+
+- name: Create custom CA directory on system certificates
+  file:
+    dest: /usr/share/ca-certificates/extra
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
+
+- name: Add CA to system
+  copy:
+    src: /etc/letsencrypt/live/CA/rootCA.pem
+    dest: /usr/share/ca-certificates/extra/{{ base_domain }}.crt
+    remote_src: yes
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
+
+- name: Update CA certificates on remote host.
+  command: >
+    update-ca-certificates
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
+
 - name: Create a combined SSL cert for testing
   shell: cat /etc/letsencrypt/live/{{ domain }}/cert.pem >
     /etc/letsencrypt/live/{{ domain }}/fullchain.pem
