@@ -13,9 +13,6 @@ It also needs to have a web directory and a web server/proxy configured for the
 ACME challenge. You can use this configuration for example
 [nginx](https://www.nginx.com/blog/free-certificates-lets-encrypt-and-nginx/).
 
-If you want an automatic renewal, you must setup a **cron** of
-`certbot -q renew`.
-
 Role Variables
 --------------
 
