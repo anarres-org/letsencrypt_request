@@ -1,5 +1,4 @@
 ---
-# tasks file for letsencrypt-request
 
 - name: Check if we already have a certificate
   stat:
