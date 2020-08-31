@@ -6,11 +6,14 @@
   register: letsencrypt_cert
 
 - name: Get an SSL certificate for {{ domain }} from Let's Encrypt
-  command: "certbot certonly --webroot -w {{ web_path_letsencrypt }} --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
+  command: >-
+    "certbot certonly --webroot -w {{ web_path_letsencrypt }} "
+    "--preferred-challenges http-01 -d {{ domain }}"
+    "--register-unsafely-without-email --agree-tos -n"
   args:
     creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   when:
-    - letsencrypt_cert.stat.exists == False
+    - not letsencrypt_cert.stat.exists
     - testing is undefined
     - letsencrypt_method == 'webroot'
 
@@ -19,7 +22,7 @@
   args:
     creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   when:
-    - letsencrypt_cert.stat.exists == false
+    - not letsencrypt_cert.stat.exists
     - testing is undefined
     - letsencrypt_method == 'standalone'
 
@@ -61,7 +64,7 @@
     mode: 0755
   when:
     - testing is defined
-    - letsencrypt_cert.stat.exists == False
+    - not letsencrypt_cert.stat.exists
 
 - name: Install openssl
   apt:
@@ -69,7 +72,7 @@
     state: present
   when:
     - testing is defined
-    - letsencrypt_cert.stat.exists == False
+    - not letsencrypt_cert.stat.exists
 
 - name: Create self-signed certificate, if testing.
   command: >
@@ -81,14 +84,14 @@
   ignore_errors: yes
   when:
     - testing is defined
-    - letsencrypt_cert.stat.exists == False
+    - not letsencrypt_cert.stat.exists
 
 - name: Create a combined SSL cert for testing
   shell: cat /etc/letsencrypt/live/{{ domain }}/cert.pem >
     /etc/letsencrypt/live/{{ domain }}/fullchain.pem
   when:
     - testing is defined
-    - letsencrypt_cert.stat.exists == False
+    - not letsencrypt_cert.stat.exists
 
 - name: Set permissions on combined SSL public cert
   file:
