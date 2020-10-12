@@ -18,7 +18,7 @@
     - letsencrypt_method == 'webroot'
 
 - name: Get an SSL certificate for {{ domain }} from Let's Encrypt
-  command: "certbot certonly --standalone --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
+  command: "/usr/bin/certbot certonly --standalone --preferred-challenges http-01 -d {{ domain }} --register-unsafely-without-email --agree-tos -n"
   args:
     creates: "/etc/letsencrypt/live/{{ domain }}/privkey.pem"
   when:
@@ -40,6 +40,7 @@
     regexp: '^authenticator'
     line: 'authenticator = webroot'
     state: present
+    mode: 0644
   when:
     - testing is undefined
 
@@ -81,7 +82,7 @@
     -out /etc/letsencrypt/live/{{ domain }}/cert.pem
   args:
     creates: /etc/letsencrypt/live/{{ domain }}/cert.pem
-  ignore_errors: yes
+  ignore_errors: true
   when:
     - testing is defined
     - not letsencrypt_cert.stat.exists
