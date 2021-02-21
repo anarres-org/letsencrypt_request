@@ -64,6 +64,17 @@
     - testing is defined
     - not letsencrypt_cert.stat.exists
 
+- name: Create live directory for testing CA
+  file:
+    dest: /etc/letsencrypt/live/CA
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - testing is defined
+    - letsencrypt_cert.stat.exists == False
+
 - name: Install openssl
   apt:
     pkg: openssl
@@ -72,17 +83,85 @@
     - testing is defined
     - not letsencrypt_cert.stat.exists
 
+- name: Create self-signed root certificate (CA), if testing.
+  command: >
+    openssl req -x509 -new -nodes -subj '/CN=lili' -days 30
+    -newkey rsa:4096 -sha256 -keyout /etc/letsencrypt/live/CA/rootCA.key
+    -out /etc/letsencrypt/live/CA/rootCA.pem
+  args:
+    creates: /etc/letsencrypt/live/CA/rootCA.pem
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - letsencrypt_cert.stat.exists == False
+
 - name: Create self-signed certificate, if testing.
   command: >
-    openssl req -x509 -nodes -subj '/CN={{ domain }}' -days 30
-    -newkey rsa:4096 -sha256 -keyout /etc/letsencrypt/live/{{ domain }}/privkey.pem
-    -out /etc/letsencrypt/live/{{ domain }}/cert.pem
+    openssl req -new -nodes -subj '/CN=lili' -days 30 \
+    -newkey rsa:4096 -sha256 -keyout /etc/letsencrypt/live/{{ domain }}/privkey.pem \
+    -out /etc/letsencrypt/live/{{ domain }}/cert.csr
+  args:
+    creates: /etc/letsencrypt/live/{{ domain }}/cert.csr
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - letsencrypt_cert.stat.exists == False
+
+- name: Create X.509 v3 configuration file
+  template:
+    src: san_template.ext.j2
+    dest: "/etc/letsencrypt/live/{{ domain }}/{{ domain }}.ext"
+  ignore_errors: yes
+  when:
+    - testing is defined
+
+- name: Create self-signed certificate, if testing.
+  command: >
+    openssl x509 -req -in /etc/letsencrypt/live/{{ domain }}/cert.csr
+    -CA /etc/letsencrypt/live/CA/rootCA.pem
+    -CAkey /etc/letsencrypt/live/CA/rootCA.key
+    -CAcreateserial -out /etc/letsencrypt/live/{{ domain }}/cert.pem
+    -days 30 -sha256 -extfile /etc/letsencrypt/live/{{ domain }}/{{ domain }}.ext
   args:
     creates: /etc/letsencrypt/live/{{ domain }}/cert.pem
   ignore_errors: true
   when:
     - testing is defined
     - not letsencrypt_cert.stat.exists
+
+- name: Check if the certificate is on the system
+  stat:
+    path: "/usr/share/ca-certificates/extra/{{ base_domain }}.crt"
+  register: system_cert
+
+- name: Create custom CA directory on system certificates
+  file:
+    dest: /usr/share/ca-certificates/extra
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
+
+- name: Add CA to system
+  copy:
+    src: /etc/letsencrypt/live/CA/rootCA.pem
+    dest: /usr/share/ca-certificates/extra/{{ base_domain }}.crt
+    remote_src: yes
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
+
+- name: Update CA certificates on remote host.
+  command: >
+    update-ca-certificates
+  ignore_errors: yes
+  when:
+    - testing is defined
+    - system_cert.stat.exists == False
 
 - name: Create a combined SSL cert for testing
   shell: cat /etc/letsencrypt/live/{{ domain }}/cert.pem >
