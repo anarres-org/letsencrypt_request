@@ -115,16 +115,6 @@ clean:
 
 	@echo ""
 
-.PHONY: docs
-docs:
-	@echo "-------------------------"
-	@echo "- Serving documentation -"
-	@echo "-------------------------"
-
-	mkdocs serve
-
-	@echo ""
-
 .PHONY: bump
 bump: pull-master bump-version clean
 
@@ -139,16 +129,6 @@ pull-master:
 
 	@echo ""
 
-.PHONY: build-docs
-build-docs:
-	@echo "--------------------------"
-	@echo "- Building documentation -"
-	@echo "--------------------------"
-
-	mkdocs build
-
-	@echo ""
-
 .PHONY: test
 test:
 	@echo "-----------------"
@@ -156,5 +136,5 @@ test:
 	@echo "-----------------"
 
 	molecule test
-	
+
 	@echo ""
