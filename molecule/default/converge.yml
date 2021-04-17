@@ -11,6 +11,7 @@
     - name: install certbot package
       apt:
         pkg: certbot
+        update_cache: true
         state: present
 
     - name: create live directory for LetsEncrypt
