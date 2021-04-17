@@ -24,6 +24,6 @@ jobs:
         with:
           path: "${{ github.repository }}"
       - name: Install dependencies
-        run: make
+        run: ls -alh
       - name: Molecule
-        run: make test
+        run: molecule test
