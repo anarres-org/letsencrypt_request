@@ -24,7 +24,7 @@ jobs:
       - name: Update test dependencies
         run: make update-test
       - name: Run Molecule tests
-        run: make test
+        run: molecule --debug test
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
