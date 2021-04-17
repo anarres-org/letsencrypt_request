@@ -16,7 +16,7 @@ provisioner:
   options:
     become: true
     extra-vars:
-      testing: true
+      testing: 'true'
 scenario:
   name: default
 verifier:
