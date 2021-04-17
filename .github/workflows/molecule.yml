@@ -14,16 +14,14 @@ jobs:
     strategy:
       fail-fast: false
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
           architecture: x64
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          path: "${{ github.repository }}"
       - name: Install dependencies
-        run: ls -alh
+        run: make update-test
       - name: Molecule
-        run: molecule test
+        run: make test
