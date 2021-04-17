@@ -15,7 +15,7 @@ provisioner:
   name: ansible
   options:
     become: true
-    extra-vars: "{'testing': true}"
+    extra-vars: "{'testing': true, domain: 'anarres.local'}"
 scenario:
   name: default
 verifier:
