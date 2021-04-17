@@ -21,6 +21,10 @@ jobs:
         with:
           python-version: 3.9
           architecture: x64
+      - name: Check docker
+        run: |
+          set -x
+          docker version
       - name: Install dependencies
         run: make update-test
       - name: Molecule
