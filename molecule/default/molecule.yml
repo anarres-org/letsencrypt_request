@@ -15,8 +15,6 @@ provisioner:
   name: ansible
   options:
     become: true
-    extra-vars:
-      testing: 'true'
 scenario:
   name: default
 verifier:
