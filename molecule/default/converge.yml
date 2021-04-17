@@ -18,8 +18,6 @@
       file:
         state: directory
         path: "/etc/letsencrypt/live"
-        group: ssl-cert
-        owner: root
 
     - name: create web directory
       file:
