@@ -21,14 +21,10 @@ jobs:
         with:
           python-version: 3.9
           architecture: x64
-      - name: Check docker
-        run: |
-          set -x
-          docker version
-          whoami
-          docker run hello-world
       - name: Install dependencies
         run: make update-test
+      - name: Molecule converge
+        run: molecule converge -- -vvv
       - name: Molecule
         run: molecule --debug test
       - name: Commit files
