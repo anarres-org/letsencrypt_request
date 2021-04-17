@@ -22,7 +22,7 @@ jobs:
       - name: Update test dependencies
         run: make update-test
       - name: Run Molecule tests
-        run: molecule --debug test; return 0
+        run: molecule --debug test
         env:
           ANSIBLE_CALLBACK_WHITELIST: profile_tasks
           PY_COLORS: '1'
