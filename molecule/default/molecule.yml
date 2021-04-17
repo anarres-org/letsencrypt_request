@@ -9,7 +9,7 @@ platforms:
 lint: |
   set -e
   yamllint -c molecule/default/.yamllint .
-  ansible-lint --exclude molecule/ --exclude library/
+  ansible-lint --exclude molecule/ --exclude library/ --exclude .github/
   flake8 --exclude roles,molecule,library
 provisioner:
   name: ansible
@@ -17,10 +17,6 @@ provisioner:
     become: true
     extra-vars:
       testing: true
-      docker_registry_mirror: http://172.16.100.1:5000
-      domain: anarres.local
-  env:
-    ANSIBLE_LIBRARY: /etc/ansible/library
 scenario:
   name: default
 verifier:

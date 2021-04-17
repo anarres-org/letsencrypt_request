@@ -16,15 +16,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Setup Python
+      - name: Setup Python 3
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
-          architecture: x64
+          python-version: '3.x'
       - name: Update test dependencies
         run: make update-test
       - name: Run Molecule tests
         run: molecule --debug test; return 0
+        env:
+          ANSIBLE_CALLBACK_WHITELIST: profile_tasks
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
       - name: Commit files
         run: |
           git config --local user.email "action@github.com"
