@@ -25,6 +25,8 @@ jobs:
         run: |
           set -x
           docker version
+          whoami
+          docker run hello-world
       - name: Install dependencies
         run: make update-test
       - name: Molecule
