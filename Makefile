@@ -7,11 +7,11 @@ update-test:
 	@echo "------------------------------"
 
 	pip install pip-tools
-	rm requirements_test.txt
-	touch requirements_test.txt
-	pip-compile -Ur requirements_test.in --allow-unsafe
+	rm requirements-dev.txt
+	touch requirements-dev.txt
+	pip-compile -Ur requirements-dev.in --allow-unsafe
 
-	pip install -r requirements_test.txt
+	pip install -r requirements-dev.txt
 
 	@echo ""
 

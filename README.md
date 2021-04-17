@@ -41,7 +41,8 @@ ACME challenge. You can use this configuration for example
 ## Testing
 
 To test the role you need [molecule](http://molecule.readthedocs.io/en/latest/),
-**docker** and some python requirements that can be installed wwith `pip install -r requirements_test.txt`.
+**docker** and some python requirements that can be installed wwith
+`pip install -r requirements-dev.txt`.
 
 ```bash
 molecule test
