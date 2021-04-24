@@ -8,7 +8,7 @@ platforms:
     image: library/debian:buster
 lint: |
   set -e
-  yamllint -c molecule/default/.yamllint .
+  yamllint -c .yamllint .
   ansible-lint --exclude molecule/ --exclude library/ --exclude .github/
   flake8 --exclude roles,molecule,library
 provisioner:
