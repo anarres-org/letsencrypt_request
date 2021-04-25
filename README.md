@@ -5,11 +5,11 @@ renewal configuration file.
 
 ## Requirements
 
-* certbot
+In your local machine:
 
-It also needs to have a web directory and a web server/proxy configured for the
-ACME challenge. You can use this configuration for example
-[nginx](https://www.nginx.com/blog/free-certificates-lets-encrypt-and-nginx/).
+```bash
+pip install -r requirements.txt
+```
 
 ## Role Variables
 
@@ -24,7 +24,11 @@ ACME challenge. You can use this configuration for example
 
 ## Dependencies
 
-`sudo` and `python` in the target host(s).
+* `sudo` and `python` in the target host(s).
+* certbot
+  It also needs to have a web directory and a web server/proxy configured for the
+  ACME challenge. You can use this configuration for example
+  [nginx](https://www.nginx.com/blog/free-certificates-lets-encrypt-and-nginx/).
 
 ## Example Playbook
 
